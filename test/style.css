@@ -1,0 +1,15 @@
+html, body {
+	margin: 0; padding: 0;
+}
+
+#slides {
+	width: 1024px; height: 768px;
+	margin: 0 auto;
+}
+
+#slides > section {
+	background: #ccc;
+	border: 20px solid #666;
+	height: 728px;
+	font: bold 4em verdana, 'sans-serif';
+}
