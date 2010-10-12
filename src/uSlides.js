@@ -1,0 +1,4 @@
+var uSlides = (function() {
+	
+	return {};
+})();
