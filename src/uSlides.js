@@ -15,6 +15,9 @@ var uSlides = (function() {
 	 *
 	 *	@param {jQuery} container The container element for the slides.
 	 *		All child elements will be treated as slides.
+	 *
+	 *		Certain data attributes can quickly add behaviours to slides,
+	 *		see {@link uSlides.behaviours}
 	 *	@param {Object} [opts] Options
 	 *		@param {boolean} [opts.fullScreen=true] Expand the container to fill the browser window (without cropping).
 	 *			This requires the container to have a fixed size.
@@ -26,16 +29,70 @@ var uSlides = (function() {
 	 *	@example
 	 *		// creating and starting a simple slideshow
 	 *		new uSlides.Slideshow('#slides').start();
+	 *
+	 *	@example
+	 *		// Adding complex behaviour to a particular slide...
+	 *		var slideshow = new uSlides.Slideshow('#slides', {
+	 *			fullScreen: true
+	 *		});
+	 *	
+	 *		slideshow.get('#introduction') // get a slide instance, then add event listeners...
+	 *		.on('show', function() {
+	 *			// set the slide up
+	 *		}).on('afterShow', function() {
+	 *			// start animating the slide, play videos etc
+	 *			// then, when the slide is complete...
+	 *			this.complete();
+	 *		}).on('hide', function() {
+	 *			// anything that needs done as the slide starts to exit, eg pausing animations
+	 *		}).on('afterHide', function() {
+	 *			// a teardown phase, if needed. The slide is now completely hidden
+	 *		});
+	 *
+	 *		slideshow.begin();
 	 */
 	function Slideshow(container, opts) {
-		this._opts = opts = $.extend({
-			fullScreen: true
+		var slideshow = this;
+		
+		slideshow._opts = opts = $.extend({
+			fullScreen: false
 		}, opts || {});
 		
-		this.container = container = $(container);
-		container.children().hide();
+		slideshow.container = container = $(container);
+		
+		// create our slide instances
+		container.children().each(function() {
+			applySlideBehaviours(
+				$(this).data( 'slide', new Slide(slideshow, this) )
+			)
+		}).hide();
 	};
 	SlideshowProto = Slideshow.prototype;
+	
+	/**
+	 *	@private
+	 *	@function
+	 *	@description Apply default behaviours depending on slide attributes
+	 *
+	 *	@param {jQuery} slideElm Slide Element
+	 */
+	function applySlideBehaviours(slideElm) {
+		var slide = slideElm.data('slide'),
+			attributes = slideElm[0].attributes,
+			i = attributes.length,
+			dataName,
+			dataValue,
+			dataIsNum;
+			
+			
+		while (i--) if (attributes[i].nodeName.slice(0, 5) === 'data-') {
+			dataName = attributes[i].nodeName.slice(5);
+			dataValue = attributes[i].nodeValue;
+			dataIsNum = ( dataValue !== '' && isFinite(dataValue) );
+			// look for method in the behaviours object, convert value to number if needed
+			behaviours[dataName] && behaviours[dataName]( slide, dataIsNum ? Number(dataValue) : dataValue );
+		}
+	}
 	
 	/**
 	 *	@name uSlides.Slideshow#_currentSlideElm
@@ -67,7 +124,9 @@ var uSlides = (function() {
 	 *	@example
 	 *		var slide = slideshow.get('#intro');
 	 */
-	SlideshowProto.get = function() {};
+	SlideshowProto.get = function(slide) {
+		return $(slide).data('slide');
+	};
 	
 	/**
 	 *	@name uSlides.Slideshow#next
@@ -109,13 +168,25 @@ var uSlides = (function() {
 	 *
 	 *	@return {uSlides.slideshow} slideshow
 	 */	
-	function switchTo(slideshow, newSlide) {
-		var currentSlide = slideshow._currentSlideElm;
+	function switchTo(slideshow, newSlideElm) {
+		var currentSlideElm = slideshow._currentSlideElm,
+			currentSlide,
+			newSlide;
 		
-		if ( newSlide[0] ) {
-			currentSlide.hide();
-			newSlide.show();
-			slideshow._currentSlideElm = newSlide;
+		if ( newSlideElm[0] ) {
+			if (currentSlideElm) {
+				currentSlide = currentSlideElm.data('slide');
+				currentSlide.fire('hide');
+				currentSlideElm.hide();
+				currentSlide.fire('afterHide');
+			}
+			
+			newSlide = newSlideElm.data('slide');
+			newSlide.fire('show');
+			newSlideElm.show();
+			newSlide.fire('afterShow');
+			
+			slideshow._currentSlideElm = newSlideElm;
 		}
 		return slideshow;
 	}
@@ -172,7 +243,7 @@ var uSlides = (function() {
 			}
 			
 			// show first item
-			slideshow._currentSlideElm = slideshow.container.find(':first-child').show();
+			switchTo( slideshow, slideshow.container.find(':first-child') );
 			slideshow._started = true;
 		}
 		return slideshow;
@@ -277,8 +348,7 @@ var uSlides = (function() {
 	 *		});
 	 */
 	EventProxyProto.on = function(eventName, callback) {
-		var proxy = this._eventProxy;
-		proxy.bind( eventName, $.proxy(callback, this) );
+		this._eventProxy.bind( eventName, $.proxy(callback, this) );
 		return this;
 	};
 	/**
@@ -310,19 +380,57 @@ var uSlides = (function() {
 	/*
 	 *	For completeness, here are the params...
 	 *
+	 *	@param {uSlides.Slideshow} slideshow Parent slideshow
 	 *	@param {jQuery} container Container element of the slide
 	 */
-	function Slide(container) {
+	function Slide(slideshow, container) {
 		this.container = container = $(container).data('slide', this);
+		this.slideshow = slideshow;
 		EventProxy.call(this);
 	}
 	SlideProto = Slide.prototype = new EventProxy;
+	SlideProto.constructor = Slide;
 	
 	/**
 	 *	@name uSlides.Slide#container
 	 *	@type jQuery
 	 *	@description Container of the slide
 	 */
+	
+	/**
+	 *	@name uSlides.Slide#slideshow
+	 *	@type uSlides.Slideshow
+	 *	@description Parent slideshow
+	 */
+	
+	/**
+	 *	@name uSlides.Slide#state
+	 *	@type string
+	 *	@description Current state of the slide
+	 *		Values can be...
+	 *
+	 *		afterHide	Slide is off-screen
+	 *		show		Slide is in the process of showing
+	 *		afterShow	Slide is visible
+	 *		hide		Slide is hiding
+	 */
+	SlideProto.state = 'afterHide';
+	
+	/**
+	 *	@name uSlides.Slide#complete
+	 *	@function
+	 *	@description Signal a slide as complete
+	 *		The slideshow will be advanced
+	 */
+	SlideProto.complete = function() {
+		this.state === 'afterShow' && this.slideshow.next();
+	};
+	
+	// extend the fire method to update state
+	SlideProto.fire = function(eventName) {
+		this.state = eventName;
+		return EventProxyProto.fire.apply(this, arguments);
+	}
 	
 	/**
 	 *	@name uSlides.Slide#event:show
@@ -356,10 +464,38 @@ var uSlides = (function() {
 	 *		in the background.
 	 */
 	
+	/**
+	 *	@name uSlides.behaviours
+	 *	@type Object
+	 *	@description Collection of behaviours automatically added to slides depending on attributes.
+	 *		Feel free to add to these. If a slide has an attribute
+	 *		data-duration="3000" then uSlides.behaviours.duration(slide, 3000)
+	 *		will be called (number-like strings are converted to numbers).
+	 */
+	var behaviours = {
+		/**
+		 *	@name uSlides.behaviours.duration
+		 *	@description Set the duration of a slide.
+		 *		Usage: data-duration="3000" for a 3 second duration
+		 */
+		duration: function(slide, duration) {
+			var timeout;
+			
+			slide.on('afterShow', function() {
+				timeout = setTimeout(function() {
+					slide.complete();
+				}, duration);
+			}).on('hide', function() {
+				clearTimeout(timeout);
+			});
+		}
+	}
+	
 	// export publics
 	return {
 		Slideshow: Slideshow,
 		Slide: Slide,
-		EventProxy: EventProxy
+		EventProxy: EventProxy,
+		behaviours: behaviours
 	};
 })();
