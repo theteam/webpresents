@@ -612,6 +612,46 @@ var uSlides = (function() {
 					newSlide.fire('afterShow');
 				}
 			});
+		},
+		/**
+		 *	@name uSlides.transitions.slideFade
+		 *	@type Function
+		 *	@description Slide the current slide to the left, and the new one in from the right
+		 *		Usage data-transition="slideFade"
+		 */
+		slideFade: function(currentSlide, newSlide) {
+			currentSlide.container.css({
+				position: 'absolute',
+				left: 0
+			}).animate({
+				left: -500,
+				opacity: 0
+			}, {
+				duration: 500
+			});
+			
+			newSlide.container.css({
+				position: 'absolute',
+				left: 500,
+				opacity: 0
+			}).animate({
+				left: 0,
+				opacity: 1
+			}, {
+				duration: 500,
+				complete: function() {
+					newSlide.container.css({
+						position: 'static'
+					});
+					currentSlide.container.css({
+						position: 'static',
+						left: 0,
+						opacity: 1
+					});
+					// transition complete
+					newSlide.fire('afterShow');
+				}
+			});
 		}
 	};
 	
