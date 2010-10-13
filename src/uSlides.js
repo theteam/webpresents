@@ -623,35 +623,38 @@ var uSlides = (function() {
 			currentSlide.container.css({
 				position: 'absolute',
 				left: 0
-			}).animate({
-				left: -500,
-				opacity: 0
-			}, {
-				duration: 500
-			});
+			}).css( getCssPropertyName('transition'), 'all 0.5s' );
 			
 			newSlide.container.css({
 				position: 'absolute',
 				left: 500,
 				opacity: 0
-			}).animate({
-				left: 0,
-				opacity: 1
-			}, {
-				duration: 500,
-				complete: function() {
-					newSlide.container.css({
-						position: 'static'
-					});
-					currentSlide.container.css({
-						position: 'static',
-						left: 0,
-						opacity: 1
-					});
-					// transition complete
-					newSlide.fire('afterShow');
-				}
+			}).css( getCssPropertyName('transition'), 'all 0.5s' ).one('transitionend', function() {
+				newSlide.container.css( getCssPropertyName('transition'), '' ).css({
+					position: 'static'
+				});
+				
+				currentSlide.container.css( getCssPropertyName('transition'), '' ).css({
+					position: 'static',
+					left: 0,
+					opacity: 1
+				});
+				
+				// transition complete
+				newSlide.fire('afterShow');
 			});
+			
+			setTimeout(function() {
+				currentSlide.container.css({
+					left: -500,
+					opacity: 0
+				});
+				
+				newSlide.container.css({
+					left: 0,
+					opacity: 1
+				});
+			}, 50);
 		}
 	};
 	

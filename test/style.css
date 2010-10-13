@@ -6,6 +6,10 @@ article, section {
 	display: block;
 }
 
+#page {
+	overflow: hidden;
+}
+
 #slides {
 	width: 1024px; height: 768px;
 	margin: 0 auto;

@@ -10,17 +10,18 @@
 
 <body>
 	
-	<article id="slides">
-		<section id="slide1" data-duration="3000" data-transition="fadeToBlack">Slide 1</section>
-		<section id="slide2" data-duration="3000" data-transition="slideFade">Slide 2</section>
-		<section id="slide3">Slide 3</section>
-	</article>
-
+	<div id="page">
+		<article id="slides">
+			<section id="slide1" data-duration="3000" data-transition="slideFade">Slide 1</section>
+			<section id="slide2" data-duration="3000" data-transition="slideFade">Slide 2</section>
+			<section id="slide3">Slide 3</section>
+		</article>
+	</div>
 	<script src="../src/lib/jquery.js"></script>
 	<script src="../src/uSlides.js"></script>
 	<script>
 		var slideshow = new uSlides.Slideshow('#slides', {
-			fullScreen: true
+			//fullScreen: true
 		});
 		
 		/*slideshow.get('#slide1').on('afterShow', function() {
