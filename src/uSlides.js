@@ -174,19 +174,35 @@ var uSlides = (function() {
 			newSlide;
 		
 		if ( newSlideElm[0] ) {
+			// exit if the current slide is mid-transition
+			if (currentSlide && currentSlide.state !== 'afterShow') {
+				return slideShow;
+			}
+			
 			if (currentSlideElm) {
 				currentSlide = currentSlideElm.data('slide');
-				currentSlide.fire('hide');
-				currentSlideElm.hide();
-				currentSlide.fire('afterHide');
+				currentSlide.fire('hide');	
 			}
 			
 			newSlide = newSlideElm.data('slide');
 			newSlide.fire('show');
 			newSlideElm.show();
-			newSlide.fire('afterShow');
 			
-			slideshow._currentSlideElm = newSlideElm;
+			// this is called when the transition is complete
+			newSlide.one('afterShow', function() {
+				currentSlide && currentSlideElm.hide() && currentSlide.fire('afterHide');
+				slideshow._currentSlideElm = newSlideElm;
+			});
+			
+			// call transition if there is one
+			if ( currentSlide && currentSlide._transitionFunc ) {
+				currentSlide._transitionFunc( currentSlide, newSlide )
+			}
+			// no transition for this slide
+			else {
+				newSlide.fire('afterShow');
+			}	
+			
 		}
 		return slideshow;
 	}
@@ -325,7 +341,12 @@ var uSlides = (function() {
 	 *	@description Abstract class that adds on & fire methods to an object.
 	 */
 	function EventProxy() {
-		this._eventProxy = $( {} );
+		var emptyFunc = function(){};
+		this._eventProxy = $({
+			// these cater for jquery trying to remove listeners ala dom
+			detachEvent: emptyFunc,
+			removeEventListener: emptyFunc
+		});
 	}
 	EventProxyProto = EventProxy.prototype;
 	
@@ -351,6 +372,17 @@ var uSlides = (function() {
 		this._eventProxy.bind( eventName, $.proxy(callback, this) );
 		return this;
 	};
+	
+	/**
+	 *	@name uSlides.EventProxy#one
+	 *	@function
+	 *	@description As .on, but the listener is removed after the first firing.
+	 */
+	EventProxyProto.one = function(eventName, callback) {
+		this._eventProxy.one( eventName, $.proxy(callback, this) );
+		return this;
+	};
+	
 	/**
 	 *	@name uSlides.EventProxy#fire
 	 *	@function
@@ -392,6 +424,13 @@ var uSlides = (function() {
 	SlideProto.constructor = Slide;
 	
 	/**
+	 *	@name uSlides.Slide#_transitionFunc
+	 *	@type Function
+	 *	@description Transition function.
+	 *		See {@link uSlides.transitions} for param details
+	 */
+	
+	/**
 	 *	@name uSlides.Slide#container
 	 *	@type jQuery
 	 *	@description Container of the slide
@@ -430,7 +469,23 @@ var uSlides = (function() {
 	SlideProto.fire = function(eventName) {
 		this.state = eventName;
 		return EventProxyProto.fire.apply(this, arguments);
-	}
+	};
+	
+	/**
+	 *	@name uSlides.Slide#transition
+	 *	@function
+	 *	@description Set a transition for this slide.
+	 *		This can also be set using the data-transition attribute,
+	 *		see {@link uSlides.transitions}.
+	 *
+	 *	@param {Function|string} func Transition function, or {@link uSlides.transitions} property name.
+	 *		See {@link uSlides.transitions} for param details.
+	 *
+	 *	@return this
+	 */
+	SlideProto.transition = function(func) {
+		this._transitionFunc = func;
+	};
 	
 	/**
 	 *	@name uSlides.Slide#event:show
@@ -475,6 +530,7 @@ var uSlides = (function() {
 	var behaviours = {
 		/**
 		 *	@name uSlides.behaviours.duration
+		 *	@type Function
 		 *	@description Set the duration of a slide.
 		 *		Usage: data-duration="3000" for a 3 second duration
 		 */
@@ -488,8 +544,76 @@ var uSlides = (function() {
 			}).on('hide', function() {
 				clearTimeout(timeout);
 			});
+		},
+		/**
+		 *	@name uSlides.behaviours.transition
+		 *	@type Function
+		 *	@description Add a transition between the current slide and the next
+		 *		See {@link uSlides.transitions}.
+		 */
+		transition: function(slide, transitionName) {
+			var transition = transitions[transitionName];
+			transition && slide.transition(transition);
 		}
-	}
+	};
+	
+	/**
+	 *	@name uSlides.transitions
+	 *	@type Object
+	 *	@description Transitions that move from one slide to the next.
+	 *		Feel free to add to these. If a slide has an attribute
+	 *		data-transition="fade" then uSlide.transitions.fade(currentSlide, newSlide)
+	 *		is called. To signal the end of the transition, call newSlide.fire('afterShow')
+	 *
+	 *		Both slides are visible when the transition starts, but you may position them
+	 *		however you wish. However, you must remove undo any CSS changes you make
+	 *		when the transition ends. This ensures these rules don't break other
+	 *		transitions or animations.
+	 */
+	var transitions = {
+		/**
+		 *	@name uSlides.transitions.fadeToBlack
+		 *	@type Function
+		 *	@description Fade to black then fade to the next slide
+		 *		Usage data-transition="fadeToBlack"
+		 */
+		fadeToBlack: function(currentSlide, newSlide) {
+			// we're not ready for the new slide yet
+			newSlide.container.hide();
+			
+			var overlay = $('<div />').css({
+				position: 'fixed',
+				top: 0,
+				bottom: 0,
+				left: 0,
+				right: 0,
+				background: '#000',
+				opacity: 0,
+				'z-index': 50
+			}).appendTo(document.body);
+			
+			// animate it
+			overlay.animate({
+				opacity: 1
+			}, {
+				duration: 300,
+				complete: function() {
+					// switch the slides
+					currentSlide.container.hide();
+					newSlide.container.show();
+				}
+			}).animate({
+				opacity: 0
+			}, {
+				duration: 300,
+				complete: function() {
+					overlay.remove();
+					// transition complete
+					newSlide.fire('afterShow');
+				}
+			});
+		}
+	};
 	
 	// export publics
 	return {
