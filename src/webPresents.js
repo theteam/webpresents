@@ -4,6 +4,10 @@
  *	@description Framework for creating a dynamic slideshow
  */
 var webPresents = (function() {
+	if (!window.$) {
+		throw Error('jQuery not found. `ant deps` can be used to fetch jQuery and friends');
+	}
+	
 	var SlideshowProto,
 		EventProxyProto,
 		SlideProto;
@@ -24,6 +28,7 @@ var webPresents = (function() {
 	 *		@param {function|string} [opts.transition] The default slide transition.
 	 *			A transition function or property name from {@link webPresents.transitions}.
 	 *			Transitions named on individual slides will overwrite this.
+	 *		@param {boolean} [opts.loop=false] Loop back to the start after the last slide.
 	 *
 	 *	@example
 	 *		// creating a slideshow instance
@@ -36,7 +41,7 @@ var webPresents = (function() {
 	 *	@example
 	 *		// Adding complex behaviour to a particular slide...
 	 *		var slideshow = new webPresents.Slideshow('#slides', {
-	 *			fullScreen: true
+	 *			transition: 'fadeToBlack'
 	 *		});
 	 *	
 	 *		slideshow.get('#introduction') // get a slide instance, then add event listeners...
@@ -55,14 +60,22 @@ var webPresents = (function() {
 	 *		slideshow.begin();
 	 */
 	function Slideshow(container, opts) {
-		var slideshow = this;
+		var slideshow = this,
+			containerChildren;
 		
 		slideshow._opts = opts = $.extend({
 			fullScreen: false,
-			transition: ''
+			transition: '',
+			loop: false
 		}, opts || {});
 		
 		slideshow.container = container = $(container).addClass('webPresents');
+		containerChildren = container.children();
+		
+		// if we're looping & there's only one item, we need to clone the slide
+		if (opts.loop && containerChildren.length === 1) {
+			containerChildren.clone(true).insertAfter(containerChildren);
+		}
 		
 		// create our slide instances
 		container.children().each(function() {
@@ -144,7 +157,13 @@ var webPresents = (function() {
 	 *		slideshow.next();
 	 */
 	SlideshowProto.next = function() {
-		return switchTo(this, this._currentSlideElm.next() );
+		var nextSlide = this._currentSlideElm.next();
+		
+		if ( !nextSlide[0] && this._opts.loop ) {
+			nextSlide = this.container.children().first();
+		}
+		
+		return switchTo(this, nextSlide);
 	};
 	
 	/**
