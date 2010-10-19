@@ -685,11 +685,11 @@ var webPresents = (function() {
 				opacity: 0
 			}).css( getCssPropertyName('transition'), 'all 0.5s' ).one('transitionend', function() {
 				newSlide.container.css( getCssPropertyName('transition'), '' ).css({
-					position: 'static'
+					position: ''
 				});
 				
 				currentSlide.container.css( getCssPropertyName('transition'), '' ).css({
-					position: 'static',
+					position: '',
 					left: 0,
 					opacity: 1
 				});
