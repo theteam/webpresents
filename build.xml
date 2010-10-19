@@ -4,6 +4,7 @@
 	<property file="build.properties" />
 	<property name="QUNIT_DIR" value="./test/lib/qunit/" />
 	<property name="JQUERY_DIR" value="./src/lib/" />
+	<property name="PRETTIFY_DIR" value="./docs/lib/prettify/" />
 	
 	<target name="deps">
 		<echo message="Setting up external dependencies" />
@@ -16,6 +17,14 @@
 			<regexpmapper from="^[^\/]*\/(.*)" to="\1"/>
 		</untar>-->
 		
+		<delete dir="${PRETTIFY_DIR}" />
+		<mkdir dir="${PRETTIFY_DIR}" />
+		<get dest="${tempzip}" src="${PRETTIFY_URL}" />
+		<unzip dest="${PRETTIFY_DIR}" src="${tempzip}">
+			<regexpmapper from="^[^\/]*\/(.*)" to="\1"/>
+		</unzip>
+		
+		<delete dir="${JQUERY_DIR}" />
 		<mkdir dir="${JQUERY_DIR}" />
 		<get dest="${JQUERY_DIR}/jquery.js" src="${JQUERY_URL}" />
 	</target>

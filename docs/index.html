@@ -1,0 +1,126 @@
+<!doctype html>  
+<html>
+<head>
+	<meta charset="utf-8"/>
+	
+	<title>Ubuntu Slides</title>
+	
+	<link rel="stylesheet" href="lib/prettify/prettify.css"/>
+	<link rel="stylesheet" href="../src/webPresents.css"/>
+	<link rel="stylesheet" href="style.css"/>
+</head>
+
+<body>
+	
+	<div id="page">
+		<article id="slides">
+			<header>
+				<h1>Web Presents</h1>
+				<p>HTML Slideshow Framework. Press <kbd>space</kbd> to advance.</p>
+			</header>
+			<section>
+				<h1><span>What is this?</span></h1>
+				<section>
+					<h1>HTML slides made easy</h1>
+					<p>
+						Write your slides using plain HTML, design them using
+						css, and use JavaScript to add advanced - just like
+						you would with any other web page.
+					</p>
+					<p>
+						Web Presents also provides shortcuts for common behaviours
+						and transitions.
+					</p>
+					
+					<h1>Navigation</h1>
+					
+					<p>Slides can be navigated using the space &amp; arrow keys</p>
+				</section>
+			</section>
+			<section>
+				<h1><span>Boilerplate</span></h1>
+				<section>
+					<h1>Standard template</h1>
+					<p>
+						This is the standard template of a presentation...
+					</p>
+					<pre class="prettyprint"><code>&lt;!doctype html&gt;  
+&lt;html&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot;/&gt;
+    &lt;title&gt;Slides&lt;/title&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;path/to/webPresents.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;yourstyles.css&quot;/&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;article id=&quot;slides&quot;&gt;
+        &lt;section&gt;&lt;h1&gt;Slide 1&lt;/h1&gt;&lt;/section&gt;
+        &lt;section&gt;&lt;h1&gt;Slide 2&lt;/h1&gt;&lt;/section&gt;
+        &lt;section&gt;&lt;h1&gt;Slide 3&lt;/h1&gt;&lt;/section&gt;
+    &lt;/article&gt;
+    &lt;script src=&quot;path/to/jquery.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;path/to/webPresents.js&quot;&gt;&lt;/script&gt;
+    &lt;script&gt;
+        var slideshow = new webPresents.Slideshow(&apos;#slides&apos;);
+        // any extra behaviour
+        slideshow.start();
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+				</section>
+			</section>
+			<section>
+				<h1><span>Slide authoring</span></h1>
+				<section>
+					<h1>HTML</h1>
+					<pre class="prettyprint"><code>&lt;article id=&quot;slides&quot;&gt;
+    &lt;section&gt;&lt;h1&gt;Slide 1&lt;/h1&gt;&lt;/section&gt;
+    &lt;section&gt;&lt;h1&gt;Slide 2&lt;/h1&gt;&lt;/section&gt;
+    &lt;section&gt;&lt;h1&gt;Slide 3&lt;/h1&gt;&lt;/section&gt;
+&lt;/article&gt;</code></pre>
+					<p>
+						In the above, the article element is the slide container,
+						its children are treated as slides. The element names are
+						up to you, use whatever is most semantic.
+					</p>
+					<p>
+						You can also mix elements, this presentation starts with
+						a header element and the rest of the slides are sections.
+					</p>
+					<p>
+						Slides contain simple HTML, just mark-up your slides
+						as you would any web site.
+					</p>
+					<h1>JavaScript</h1>
+					<pre class="prettyprint"><code>var slideshow = new webPresents.Slideshow(&apos;#slides&apos;);
+// any extra behaviour
+slideshow.start();</code></pre>
+					<p>
+						The above creates a presentation from the element with id 'slides'.
+					</p>
+				</section>
+			</section>
+		</article>
+	</div>
+	<script src="../src/lib/jquery.js"></script>
+	<script src="lib/prettify/prettify.js"></script>
+	<script src="../src/webPresents.js"></script>
+	<script>
+		prettyPrint();
+	
+		var slideshow = new webPresents.Slideshow('#slides', {
+			//fullScreen: true
+			transition: 'fadeToBlack'
+		});
+		
+		/*slideshow.get('#slide1').on('afterShow', function() {
+			var slide = this;
+			setTimeout(function() {
+				slide.complete();
+			}, 2000);
+		});*/
+		
+		slideshow.start();
+	</script>
+</body>
+</html>

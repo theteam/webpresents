@@ -1,0 +1,98 @@
+html {
+	background: #000;
+}
+
+#page {
+	overflow: hidden;
+}
+
+#slides {
+	width: 1024px; height: 768px;
+	margin: 0 auto;
+	position: relative;
+}
+
+#slides > section, #slides > header {
+	background: url(img/bg.jpg);
+	width: 1024px; height: 768px;
+	font: normal 16px verdana, 'sans-serif';
+	overflow: hidden;
+	position: relative;
+	color: #333;
+}
+
+/* Main header slide */
+	#slides > header {
+		display: block;
+		background: url(img/maintitlebg.jpg) no-repeat, url(img/bg.jpg);
+		height: 768px;
+	}
+	
+	#slides > header h1 {
+		color: #fff;
+		position: absolute;
+		bottom: 206px;
+		right: 33px;
+		text-align: right;
+		width: 730px;
+		text-shadow: 0px 2px 5px rgba(0, 0, 0, 0.6);
+		line-height: 0.9;
+		font-size: 73px;
+	}
+	#slides > header p {
+		position: absolute;
+		top: 507px;
+		right: 33px;
+		text-align: right;
+		color: #333;
+		font-size: 30px;
+		width: 500px;
+		font-weight: bold;
+	}
+
+/* Other content slides */
+	/* Title */
+		#slides > section > h1 {
+			background: url(img/heading.png) no-repeat;
+			height: 103px;
+			margin: 0;
+			padding: 0;
+			color: #fff;
+			text-shadow: 0px 2px 5px rgba(0, 0, 0, 0.6);
+			margin-bottom: 38px;
+		}
+		#slides > section > h1 > span {
+			display: block;
+			border-bottom: 10px solid #fff;
+			overflow: hidden;
+			height: 55px;
+			-moz-transform-origin: top left;
+			-moz-transform: rotate(-2.5deg);
+			position: absolute;
+			top: 38px;
+			left: -15px;
+			text-indent: 30px;
+			width: 2000px;
+			font-size: 55px;
+			text-transform: uppercase;
+		}
+	/* Code blocks */
+		pre.prettyprint {
+			background: #fff url(img/paper.jpg);
+			margin: 10px 110px;
+			border: none;
+			padding: 10px;
+			font: normal 13px/1.3 "Courier New", courier, monospace;
+			-moz-box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
+		}
+	/* General formatting */
+		#slides > section p {
+			max-width: 630px;
+			margin-left: 110px;
+			line-height: 1.5;
+		}
+		#slides > section section h1 {
+			margin: 0.5em 70px;
+			font-size: 22px;
+		}
+	
