@@ -100,6 +100,49 @@ slideshow.start();</code></pre>
 					</p>
 				</section>
 			</section>
+			<section>
+				<h1><span>Slide styling</span></h1>
+				<section>
+					<h1>Basic setup</h1>
+					<p>
+						Web Presents does not come with any default styles, although
+						feel free to use the style used in these docs. Most slide
+						stylesheets will include something similar to...
+					</p>
+					<pre class="prettyprint"><code>#slides {
+    width: 1024px; height: 768px;
+    margin: 0 auto;
+}
+
+#slides > section {
+    width: 1024px; height: 768px;
+    overflow: hidden;
+    position: relative;
+}</code></pre>
+					<p>
+						This sets up the size of the presentation &amp; the
+						slides. The margin centers the presentation in its
+						parent element.
+					</p>
+					<p>
+						Setting overflow &amp; position on the sections isn't
+						required, but will make positioning within slides easier.
+					</p>
+					<p>
+						The rest of the styles are up to you!
+					</p>
+				</section>
+			</section>
+			<section>
+				<h1><span>Slide behaviour</span></h1>
+				<section>
+					<h1>Shortcuts</h1>
+					<p>
+						Although slide behaviour can be fine-tuned with JavaScript,
+						there are a few shortcuts for common behaviours.
+					</p>
+				</section>
+			</section>
 		</article>
 	</div>
 	<script src="../src/lib/jquery.js"></script>

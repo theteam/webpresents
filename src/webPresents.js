@@ -62,7 +62,7 @@ var webPresents = (function() {
 			transition: ''
 		}, opts || {});
 		
-		slideshow.container = container = $(container);
+		slideshow.container = container = $(container).addClass('webPresents');
 		
 		// create our slide instances
 		container.children().each(function() {
