@@ -607,7 +607,32 @@ var webPresents = (function() {
 			 *		Usage: data-fullvideo="video url"
 			 *		   Or: data-fullvideo
 			 */
-			fullvideo: video
+			fullvideo: video,
+			/**
+			 *	@name webPresents.behaviours.fadeelements
+			 *	@type Function
+			 *	@description Fade all the elements of the slide in gradually
+			 *		Usage: data-fadeelements
+			 *		   Or: data-fadeelements
+			 */
+			fadeelements: function(slide) {
+				var elements,
+					transition = getCssPropertyName('transition');
+				
+				slide.on('show', function() {
+					elements = slide.container.find('*').filter(function() {
+						return $(this).css('display') === 'block';
+					}).each(function(i) {
+						$(this).css({
+							opacity: 0
+						}).css( transition, 'opacity 0.5s ' + (i/2) + 's' );
+					});
+				}).on('afterShow', function() {
+					elements.css('opacity', 1);
+				}).on('afterHide', function() {
+					elements.css( transition, 'none' );
+				});
+			}
 		};
 	})();
 	
