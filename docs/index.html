@@ -133,7 +133,7 @@ slideshow.start();</code></pre>
 					</p>
 				</section>
 			</section>
-			<section>
+			<section data-fadeelements>
 				<h1><span>Slide behaviour</span></h1>
 				<section>
 					<h1>Shortcuts</h1>
@@ -141,6 +141,29 @@ slideshow.start();</code></pre>
 						Although slide behaviour can be fine-tuned with JavaScript,
 						there are a few shortcuts for common behaviours.
 					</p>
+					<section>
+						<h1>Duration</h1>
+						<p>
+							You can give your slide a duration in miliseconds,
+							after this the presentation will advance onto the
+							next slide.
+						</p>
+						<pre class="prettyprint"><code>&lt;section data-duration="5000"&gt;...slide content...&lt;/section&gt;</code></pre>
+					</section>
+					<section>
+						<h1>Fade in element by element</h1>
+						<p>
+							A simple effect demonstrated on this slide.
+						</p>
+						<pre class="prettyprint"><code>&lt;section data-fadeelements&gt;...slide content...&lt;/section&gt;</code></pre>
+					</section>
+					<section>
+						<h1>Video</h1>
+						<p>
+							A simple effect demonstrated on this slide.
+						</p>
+						<pre class="prettyprint"><code>&lt;section data-fullvideo="kittens.webm"&gt;...slide content...&lt;/section&gt;</code></pre>
+					</section>
 				</section>
 			</section>
 		</article>
