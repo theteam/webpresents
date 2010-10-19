@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project name="UbuntuSlides" default="deps" basedir=".">
+<project name="UbuntwebPresents" default="deps" basedir=".">
 	<property file="build.properties" />
 	<property name="QUNIT_DIR" value="./test/lib/qunit/" />
 	<property name="JQUERY_DIR" value="./src/lib/" />

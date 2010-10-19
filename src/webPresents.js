@@ -1,15 +1,15 @@
 /**
- *	@name uSlides
+ *	@name webPresents
  *	@namespace
  *	@description Framework for creating a dynamic slideshow
  */
-var uSlides = (function() {
+var webPresents = (function() {
 	var SlideshowProto,
 		EventProxyProto,
 		SlideProto;
 	
 	/**
-	 *	@name uSlides.Slideshow
+	 *	@name webPresents.Slideshow
 	 *	@class
 	 *	@description A slide deck.
 	 *
@@ -17,25 +17,25 @@ var uSlides = (function() {
 	 *		All child elements will be treated as slides.
 	 *
 	 *		Certain data attributes can quickly add behaviours to slides,
-	 *		see {@link uSlides.behaviours}
+	 *		see {@link webPresents.behaviours}
 	 *	@param {Object} [opts] Options
 	 *		@param {boolean} [opts.fullScreen=true] Expand the container to fill the browser window (without cropping).
 	 *			This requires the container to have a fixed size.
 	 *		@param {function|string} [opts.transition] The default slide transition.
-	 *			A transition function or property name from {@link uSlides.transitions}.
+	 *			A transition function or property name from {@link webPresents.transitions}.
 	 *			Transitions named on individual slides will overwrite this.
 	 *
 	 *	@example
 	 *		// creating a slideshow instance
-	 *		var slideshow = new uSlides.Slideshow('#slides');
+	 *		var slideshow = new webPresents.Slideshow('#slides');
 	 *
 	 *	@example
 	 *		// creating and starting a simple slideshow
-	 *		new uSlides.Slideshow('#slides').start();
+	 *		new webPresents.Slideshow('#slides').start();
 	 *
 	 *	@example
 	 *		// Adding complex behaviour to a particular slide...
-	 *		var slideshow = new uSlides.Slideshow('#slides', {
+	 *		var slideshow = new webPresents.Slideshow('#slides', {
 	 *			fullScreen: true
 	 *		});
 	 *	
@@ -99,31 +99,31 @@ var uSlides = (function() {
 	}
 	
 	/**
-	 *	@name uSlides.Slideshow#_currentSlideElm
+	 *	@name webPresents.Slideshow#_currentSlideElm
 	 *	@type jQuery
 	 *	@description Element representing the current slide
 	 */
 	
 	/**
-	 *	@name uSlides.Slideshow#_started
+	 *	@name webPresents.Slideshow#_started
 	 *	@type boolean
 	 *	@description Is the slideshow playing?
 	 */
 	
 	/**
-	 *	@name uSlides.Slideshow#container
+	 *	@name webPresents.Slideshow#container
 	 *	@type jQuery
 	 *	@description Container of the slides
 	 */
 	
 	/**
-	 *	@name uSlides.Slideshow#get
+	 *	@name webPresents.Slideshow#get
 	 *	@function
 	 *	@description Get a slide instance for a particular slide
 	 *
 	 *	@param {jQuery} slide Reference to the slide element
 	 *
-	 *	@return {uSlides.Slide}
+	 *	@return {webPresents.Slide}
 	 *	
 	 *	@example
 	 *		var slide = slideshow.get('#intro');
@@ -133,7 +133,7 @@ var uSlides = (function() {
 	};
 	
 	/**
-	 *	@name uSlides.Slideshow#next
+	 *	@name webPresents.Slideshow#next
 	 *	@function
 	 *	@description Advance the slideshow.
 	 *		This is automatically bound to right arrow key & space.
@@ -148,7 +148,7 @@ var uSlides = (function() {
 	};
 	
 	/**
-	 *	@name uSlides.Slideshow#prev
+	 *	@name webPresents.Slideshow#prev
 	 *	@function
 	 *	@description Move the slideshow back
 	 *		This is automatically bound to left arrow key
@@ -167,10 +167,10 @@ var uSlides = (function() {
 	 *	@function
 	 *	@description Move to a particular slide
 	 *
-	 *	@param {uSlides.slideshow} slideshow Slideshow instance
+	 *	@param {webPresents.slideshow} slideshow Slideshow instance
 	 *	@param {jQuery} newSlide Slide element to show next
 	 *
-	 *	@return {uSlides.slideshow} slideshow
+	 *	@return {webPresents.slideshow} slideshow
 	 */	
 	function switchTo(slideshow, newSlideElm) {
 		var currentSlideElm = slideshow._currentSlideElm,
@@ -212,7 +212,7 @@ var uSlides = (function() {
 	}
 	
 	/**
-	 *	@name uSlides.Slideshow#start
+	 *	@name webPresents.Slideshow#start
 	 *	@function
 	 *	@description Start the slideshow
 	 *	
@@ -340,7 +340,7 @@ var uSlides = (function() {
 	})();
 	
 	/**
-	 *	@name uSlides.EventProxy
+	 *	@name webPresents.EventProxy
 	 *	@class
 	 *	@description Abstract class that adds on & fire methods to an object.
 	 */
@@ -355,7 +355,7 @@ var uSlides = (function() {
 	EventProxyProto = EventProxy.prototype;
 	
 	/**
-	 *	@name uSlides.EventProxy#on
+	 *	@name webPresents.EventProxy#on
 	 *	@function
 	 *	@description Listen for an event
 	 *	
@@ -378,7 +378,7 @@ var uSlides = (function() {
 	};
 	
 	/**
-	 *	@name uSlides.EventProxy#one
+	 *	@name webPresents.EventProxy#one
 	 *	@function
 	 *	@description As .on, but the listener is removed after the first firing.
 	 */
@@ -388,7 +388,7 @@ var uSlides = (function() {
 	};
 	
 	/**
-	 *	@name uSlides.EventProxy#fire
+	 *	@name webPresents.EventProxy#fire
 	 *	@function
 	 *	@description Fire an event.
 	 *	@param {string} eventName Name of the event to fire.
@@ -405,22 +405,22 @@ var uSlides = (function() {
 	};
 	
 	/**
-	 *	@name uSlides.Slide
+	 *	@name webPresents.Slide
 	 *	@class
-	 *	@extends uSlides.EventProxy
+	 *	@extends webPresents.EventProxy
 	 *	@description A slide
 	 *		You don't need to create these manually, they're created automatically
-	 *		when a slideshow is created, use {@link uSlides.Slideshow#get} to get
+	 *		when a slideshow is created, use {@link webPresents.Slideshow#get} to get
 	 *		a slide instance.
 	 */
 	/*
 	 *	For completeness, here are the params...
 	 *
-	 *	@param {uSlides.Slideshow} slideshow Parent slideshow
+	 *	@param {webPresents.Slideshow} slideshow Parent slideshow
 	 *	@param {jQuery} container Container element of the slide
 	 */
 	function Slide(slideshow, container) {
-		this.container = container = $(container).data('slide', this);
+		this.container = container = $(container).data('slide', this).addClass('afterHide');
 		this.slideshow = slideshow;
 		EventProxy.call(this);
 	}
@@ -428,26 +428,26 @@ var uSlides = (function() {
 	SlideProto.constructor = Slide;
 	
 	/**
-	 *	@name uSlides.Slide#_transitionFunc
+	 *	@name webPresents.Slide#_transitionFunc
 	 *	@type Function
 	 *	@description Transition function.
-	 *		See {@link uSlides.transitions} for param details
+	 *		See {@link webPresents.transitions} for param details
 	 */
 	
 	/**
-	 *	@name uSlides.Slide#container
+	 *	@name webPresents.Slide#container
 	 *	@type jQuery
 	 *	@description Container of the slide
 	 */
 	
 	/**
-	 *	@name uSlides.Slide#slideshow
-	 *	@type uSlides.Slideshow
+	 *	@name webPresents.Slide#slideshow
+	 *	@type webPresents.Slideshow
 	 *	@description Parent slideshow
 	 */
 	
 	/**
-	 *	@name uSlides.Slide#state
+	 *	@name webPresents.Slide#state
 	 *	@type string
 	 *	@description Current state of the slide
 	 *		Values can be...
@@ -460,7 +460,7 @@ var uSlides = (function() {
 	SlideProto.state = 'afterHide';
 	
 	/**
-	 *	@name uSlides.Slide#complete
+	 *	@name webPresents.Slide#complete
 	 *	@function
 	 *	@description Signal a slide as complete
 	 *		The slideshow will be advanced
@@ -471,19 +471,19 @@ var uSlides = (function() {
 	
 	// extend the fire method to update state
 	SlideProto.fire = function(eventName) {
-		this.state = eventName;
+		this.container.removeClass( this.state ).addClass( this.state = eventName );
 		return EventProxyProto.fire.apply(this, arguments);
 	};
 	
 	/**
-	 *	@name uSlides.Slide#transition
+	 *	@name webPresents.Slide#transition
 	 *	@function
 	 *	@description Set a transition for this slide.
 	 *		This can also be set using the data-transition attribute,
-	 *		see {@link uSlides.transitions}.
+	 *		see {@link webPresents.transitions}.
 	 *
-	 *	@param {Function|string} func Transition function, or {@link uSlides.transitions} property name.
-	 *		See {@link uSlides.transitions} for param details.
+	 *	@param {Function|string} func Transition function, or {@link webPresents.transitions} property name.
+	 *		See {@link webPresents.transitions} for param details.
 	 *
 	 *	@return this
 	 */
@@ -496,14 +496,14 @@ var uSlides = (function() {
 	};
 	
 	/**
-	 *	@name uSlides.Slide#event:show
+	 *	@name webPresents.Slide#event:show
 	 *	@event
 	 *	@description About to transition into view.
 	 *		Use this to set the slide up.
 	 */
 	
 	/**
-	 *	@name uSlides.Slide#event:afterShow
+	 *	@name webPresents.Slide#event:afterShow
 	 *	@event
 	 *	@description Transitioned into view.
 	 *		Use this to start any animations, videos, audios associated with
@@ -513,14 +513,14 @@ var uSlides = (function() {
 	 */
 	
 	/**
-	 *	@name uSlides.Slide#event:hide
+	 *	@name webPresents.Slide#event:hide
 	 *	@event
 	 *	@description About to transition out of view
 	 *		Use this to pause any animations that may slow the transition.
 	 */
 	
 	/**
-	 *	@name uSlides.Slide#event:afterHide
+	 *	@name webPresents.Slide#event:afterHide
 	 *	@event
 	 *	@description Transitioned out of view
 	 *		Use this to pause any animations, stop videos etc that shouldn't run
@@ -528,11 +528,11 @@ var uSlides = (function() {
 	 */
 	
 	/**
-	 *	@name uSlides.behaviours
+	 *	@name webPresents.behaviours
 	 *	@type Object
 	 *	@description Collection of behaviours automatically added to slides depending on attributes.
 	 *		Feel free to add to these. If a slide has an attribute
-	 *		data-duration="3000" then uSlides.behaviours.duration(slide, 3000)
+	 *		data-duration="3000" then webPresents.behaviours.duration(slide, 3000)
 	 *		will be called (number-like strings are converted to numbers).
 	 */
 	var behaviours = (function() {
@@ -560,7 +560,7 @@ var uSlides = (function() {
 		
 		return {
 			/**
-			 *	@name uSlides.behaviours.duration
+			 *	@name webPresents.behaviours.duration
 			 *	@type Function
 			 *	@description Set the duration of a slide.
 			 *		Usage: data-duration="3000" for a 3 second duration
@@ -577,16 +577,16 @@ var uSlides = (function() {
 				});
 			},
 			/**
-			 *	@name uSlides.behaviours.transition
+			 *	@name webPresents.behaviours.transition
 			 *	@type Function
 			 *	@description Add a transition between the current slide and the next
-			 *		See {@link uSlides.transitions}.
+			 *		See {@link webPresents.transitions}.
 			 */
 			transition: function(slide, transitionName) {
 				slide.transition(transitionName);
 			},
 			/**
-			 *	@name uSlides.behaviours.video
+			 *	@name webPresents.behaviours.video
 			 *	@type Function
 			 *	@description Display a video in the slide
 			 *		Usage: data-fullvideo="video url"
@@ -601,9 +601,9 @@ var uSlides = (function() {
 			 */
 			video: video,
 			/**
-			 *	@name uSlides.behaviours.fullvideo
+			 *	@name webPresents.behaviours.fullvideo
 			 *	@type Function
-			 *	@description As {@link uSlides.behaviours.video}, but the video will take up the whole slide
+			 *	@description As {@link webPresents.behaviours.video}, but the video will take up the whole slide
 			 *		Usage: data-fullvideo="video url"
 			 *		   Or: data-fullvideo
 			 */
@@ -612,7 +612,7 @@ var uSlides = (function() {
 	})();
 	
 	/**
-	 *	@name uSlides.transitions
+	 *	@name webPresents.transitions
 	 *	@type Object
 	 *	@description Transitions that move from one slide to the next.
 	 *		Feel free to add to these. If a slide has an attribute
@@ -626,7 +626,7 @@ var uSlides = (function() {
 	 */
 	var transitions = {
 		/**
-		 *	@name uSlides.transitions.fadeToBlack
+		 *	@name webPresents.transitions.fadeToBlack
 		 *	@type Function
 		 *	@description Fade to black then fade to the next slide
 		 *		Usage data-transition="fadeToBlack"
@@ -668,7 +668,7 @@ var uSlides = (function() {
 			});
 		},
 		/**
-		 *	@name uSlides.transitions.slideFade
+		 *	@name webPresents.transitions.slideFade
 		 *	@type Function
 		 *	@description Slide the current slide to the left, and the new one in from the right
 		 *		Usage data-transition="slideFade"
