@@ -12,9 +12,10 @@
 	
 	<div id="page">
 		<article id="slides">
-			<section data-duration="3000" data-transition="slideFade">Slide 1</section>
-			<section data-fullvideo="img/kitten.webm" data-transition="slideFade"></section>
-			<section data-duration="3000" data-transition="slideFade">Slide 2</section>
+			<section data-duration="3000">Slide 1</section>
+			<section data-fullvideo="img/kitten.webm"></section>
+			<section data-fullvideo="img/kitten.webm"></section>
+			<section data-duration="3000">Slide 2</section>
 			<section>Slide 3</section>
 		</article>
 	</div>
@@ -23,6 +24,7 @@
 	<script>
 		var slideshow = new uSlides.Slideshow('#slides', {
 			//fullScreen: true
+			transition: 'slideFade'
 		});
 		
 		/*slideshow.get('#slide1').on('afterShow', function() {

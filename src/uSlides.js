@@ -21,6 +21,9 @@ var uSlides = (function() {
 	 *	@param {Object} [opts] Options
 	 *		@param {boolean} [opts.fullScreen=true] Expand the container to fill the browser window (without cropping).
 	 *			This requires the container to have a fixed size.
+	 *		@param {function|string} [opts.transition] The default slide transition.
+	 *			A transition function or property name from {@link uSlides.transitions}.
+	 *			Transitions named on individual slides will overwrite this.
 	 *
 	 *	@example
 	 *		// creating a slideshow instance
@@ -55,7 +58,8 @@ var uSlides = (function() {
 		var slideshow = this;
 		
 		slideshow._opts = opts = $.extend({
-			fullScreen: false
+			fullScreen: false,
+			transition: ''
 		}, opts || {});
 		
 		slideshow.container = container = $(container);
@@ -63,7 +67,7 @@ var uSlides = (function() {
 		// create our slide instances
 		container.children().each(function() {
 			applySlideBehaviours(
-				$(this).data( 'slide', new Slide(slideshow, this) )
+				$(this).data( 'slide', new Slide(slideshow, this).transition(opts.transition) )
 			)
 		}).hide();
 	};
@@ -484,7 +488,11 @@ var uSlides = (function() {
 	 *	@return this
 	 */
 	SlideProto.transition = function(func) {
+		if (typeof func === 'string') {
+			func = transitions[func];
+		}
 		this._transitionFunc = func;
+		return this;
 	};
 	
 	/**
@@ -529,7 +537,7 @@ var uSlides = (function() {
 	 */
 	var behaviours = (function() {
 		
-		function video() {
+		function video(slide, videoUrl) {
 			var video = videoUrl ?
 					$('<video/>').attr('src', videoUrl).appendTo(slide.container) :
 					slide.container.find('video').first(),
@@ -575,8 +583,7 @@ var uSlides = (function() {
 			 *		See {@link uSlides.transitions}.
 			 */
 			transition: function(slide, transitionName) {
-				var transition = transitions[transitionName];
-				transition && slide.transition(transition);
+				slide.transition(transitionName);
 			},
 			/**
 			 *	@name uSlides.behaviours.video
