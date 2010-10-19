@@ -23,3 +23,8 @@ article, section {
 	width: 984px;
 	font: bold 4em verdana, 'sans-serif';
 }
+
+[data-fullvideo] video {
+	width: 100%;
+	height: 100%;
+}

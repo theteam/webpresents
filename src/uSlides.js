@@ -259,7 +259,7 @@ var uSlides = (function() {
 			}
 			
 			// show first item
-			switchTo( slideshow, slideshow.container.find(':first-child') );
+			switchTo( slideshow, slideshow.container.children().first() );
 			slideshow._started = true;
 		}
 		return slideshow;
@@ -527,35 +527,82 @@ var uSlides = (function() {
 	 *		data-duration="3000" then uSlides.behaviours.duration(slide, 3000)
 	 *		will be called (number-like strings are converted to numbers).
 	 */
-	var behaviours = {
-		/**
-		 *	@name uSlides.behaviours.duration
-		 *	@type Function
-		 *	@description Set the duration of a slide.
-		 *		Usage: data-duration="3000" for a 3 second duration
-		 */
-		duration: function(slide, duration) {
-			var timeout;
+	var behaviours = (function() {
+		
+		function video() {
+			var video = videoUrl ?
+					$('<video/>').attr('src', videoUrl).appendTo(slide.container) :
+					slide.container.find('video').first(),
+				videoElm = video[0];
 			
-			slide.on('afterShow', function() {
-				timeout = setTimeout(function() {
-					slide.complete();
-				}, duration);
-			}).on('hide', function() {
-				clearTimeout(timeout);
+			video.attr({
+				preload: 'auto'
+			}).bind('ended', function() {
+				slide.complete();
 			});
-		},
-		/**
-		 *	@name uSlides.behaviours.transition
-		 *	@type Function
-		 *	@description Add a transition between the current slide and the next
-		 *		See {@link uSlides.transitions}.
-		 */
-		transition: function(slide, transitionName) {
-			var transition = transitions[transitionName];
-			transition && slide.transition(transition);
+			
+			slide.on('show', function() {
+				videoElm.currentTime = 0;
+			}).on('afterShow', function() {
+				videoElm.play();
+			}).on('hide', function() {
+				videoElm.pause();
+			});
 		}
-	};
+		
+		return {
+			/**
+			 *	@name uSlides.behaviours.duration
+			 *	@type Function
+			 *	@description Set the duration of a slide.
+			 *		Usage: data-duration="3000" for a 3 second duration
+			 */
+			duration: function(slide, duration) {
+				var timeout;
+				
+				slide.on('afterShow', function() {
+					timeout = setTimeout(function() {
+						slide.complete();
+					}, duration);
+				}).on('hide', function() {
+					clearTimeout(timeout);
+				});
+			},
+			/**
+			 *	@name uSlides.behaviours.transition
+			 *	@type Function
+			 *	@description Add a transition between the current slide and the next
+			 *		See {@link uSlides.transitions}.
+			 */
+			transition: function(slide, transitionName) {
+				var transition = transitions[transitionName];
+				transition && slide.transition(transition);
+			},
+			/**
+			 *	@name uSlides.behaviours.video
+			 *	@type Function
+			 *	@description Display a video in the slide
+			 *		Usage: data-fullvideo="video url"
+			 *		   Or: data-fullvideo
+			 *
+			 *		If a video url is provided, a <video> element will be created
+			 *		for that slide. Otherwise behaviour is added to the first
+			 *		video element in the slide.
+			 *
+			 *		This will play the video once the slide enters the view and
+			 *		automatically advance to the next slide once the video completes.
+			 */
+			video: video,
+			/**
+			 *	@name uSlides.behaviours.fullvideo
+			 *	@type Function
+			 *	@description As {@link uSlides.behaviours.video}, but the video will take up the whole slide
+			 *		Usage: data-fullvideo="video url"
+			 *		   Or: data-fullvideo
+			 */
+			fullvideo: video
+		};
+	})();
 	
 	/**
 	 *	@name uSlides.transitions
