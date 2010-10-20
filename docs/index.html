@@ -133,7 +133,7 @@ slideshow.start();</code></pre>
 					</p>
 				</section>
 			</section>
-			<section data-fadeelements>
+			<section data-fadeelements data-transition="slideFade">
 				<h1><span>Slide behaviour</span></h1>
 				<section>
 					<h1>Shortcuts</h1>
@@ -160,10 +160,138 @@ slideshow.start();</code></pre>
 					<section>
 						<h1>Video</h1>
 						<p>
-							A simple effect demonstrated on this slide.
+							Display a video in the slide. This can create the video
+							element for you or enhance one already on the page.
 						</p>
 						<pre class="prettyprint"><code>&lt;section data-fullvideo="kittens.webm"&gt;...slide content...&lt;/section&gt;</code></pre>
 					</section>
+				</section>
+			</section>
+			<section>
+				<h1><span>Slide transitions</span></h1>
+				<section>
+					<h1>Shortcuts</h1>
+					<p>
+						As with behaviours, exit transitions can be given to
+						individual slides.
+					</p>
+					<pre class="prettyprint"><code>&lt;section data-transition="fadeToBlack"&gt;...slide content...&lt;/section&gt;
+&lt;section data-transition="slideToNext"&gt;...slide content...&lt;/section&gt;</code></pre>
+					<p>
+						The previous slide uses a different transition to the
+						rest of the presentation.
+					</p>
+				</section>
+			</section>
+			<section>
+				<h1><span>JavaScript API</span></h1>
+				<section>
+					<h1>Customising Web Presents</h1>
+					<p>
+						webPresents.js is well documented and allows you to
+						add custom behaviours to individual slides making it
+						easy to setup and teardown slides.
+					</p>
+					<p>
+						This document introduces some of the API concepts, but
+						for the full picture, see the documentation in the
+						source file itself.
+					</p>
+					<h1>Slideshow Constructor</h1>
+					<pre class="prettyprint"><code>var slideshow = new webPresents.Slideshow('#slides', {
+    transition: 'fadeToBlack'
+});</code></pre>
+					<p>
+						The slideshow constructor also has an option object, this
+						can be used to make the carousel loop &amp; apply default
+						transitions.
+					</p>
+					
+					<h1>Slides</h1>
+					
+					<p>
+						Once you've created your slideshow you can get references
+						to individual slides via CSS selectors to add additional behaviours.
+					</p>
+					<pre class="prettyprint"><code>slideshow.get('#introduction');</code></pre>
+				</section>
+			</section>
+			<section>
+				<h1><span>JavaScript API</span></h1>
+				<section>
+					<h1>Slide Events</h1>
+					<pre class="prettyprint"><code>slideshow.get('#introduction') // get a slide instance, then add event listeners...
+    .on('show', function() {
+        // set the slide up
+    }).on('afterShow', function() {
+        // start animating the slide, play videos etc
+        // then, signal the slide is complete to auto-advance
+        this.complete();
+    }).on('hide', function() {
+        // anything that needs done as the slide starts to exit, eg pausing animations
+    }).on('afterHide', function() {
+        // a teardown phase, if needed. The slide is now completely hidden
+    });</code></pre>
+					<p>
+						Slides have a series of events which you can react to
+						to ensure animations &amp; interactivity happen
+						when the slide is in view, but don't take up cycles
+						while the slide is hidden.
+					</p>
+					<p>
+						See the source code for detailed documentation on
+						events and other instance methods.
+					</p>
+				</section>
+			</section>
+			<section>
+				<h1><span>JavaScript API</span></h1>
+				<section>
+					<h1>Custom behaviours and transitions</h1>
+					<p>
+						You can easily add custom behaviours and transitions
+						by adding to the webPresents.behaviours and webPresents.transitions
+						objects.
+					</p>
+					<p>
+						These are also used internally, here's how the video
+						behaviour is added...
+					</p>
+					<pre class="prettyprint"><code>...&lt;section data-video=&quot;kittens.webm&quot;&gt;&lt;/section&gt;...
+&lt;script&gt;
+    webPresents.behaviours.video = function (slide, videoUrl) {
+        var video = $(&apos;&lt;video/&gt;&apos;).attr(&apos;src&apos;, videoUrl).appendTo(slide.container),
+            videoElm = video[0];
+        
+        video.attr({
+            preload: &apos;auto&apos;
+        }).bind(&apos;ended&apos;, function() {
+            slide.complete();
+        });
+        
+        slide.on(&apos;show&apos;, function() {
+            videoElm.currentTime = 0;
+        }).on(&apos;afterShow&apos;, function() {
+            videoElm.play();
+        }).on(&apos;hide&apos;, function() {
+            videoElm.pause();
+        });
+    };
+    
+    new webPresents.Slideshow(&apos;#slides&apos;, {
+        transition: &apos;fadeToBlack&apos;
+    }).start();
+&lt;/script&gt;</code></pre>
+				</section>
+			</section>
+			<section>
+				<h1><span>JavaScript API</span></h1>
+				<section>
+					<h1>Be creative!</h1>
+					<p>
+						Add your own behaviours and transitions. If you think
+						they'd be useful to others, send us a push request
+						via github.
 				</section>
 			</section>
 		</article>
@@ -178,13 +306,6 @@ slideshow.start();</code></pre>
 			//fullScreen: true
 			transition: 'fadeToBlack'
 		});
-		
-		/*slideshow.get('#slide1').on('afterShow', function() {
-			var slide = this;
-			setTimeout(function() {
-				slide.complete();
-			}, 2000);
-		});*/
 		
 		slideshow.start();
 	</script>

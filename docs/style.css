@@ -79,7 +79,7 @@ html {
 	/* Code blocks */
 		pre.prettyprint {
 			background: #fff url(img/paper.jpg);
-			margin: 10px 110px;
+			margin: 10px 110px 20px;
 			border: none;
 			padding: 10px;
 			font: normal 13px/1.3 "Courier New", courier, monospace;
