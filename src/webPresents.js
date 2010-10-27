@@ -560,20 +560,37 @@ var webPresents = (function() {
 			var video = videoUrl ?
 					$('<video/>').attr('src', videoUrl).appendTo(slide.container) :
 					slide.container.find('video').first(),
-				videoElm = video[0];
+				videoElm = video[0],
+				funcQueue = [],
+				isReady = false;
+			
+			function whenReady(func) {
+				isReady ? func() : funcQueue.push(func); 
+			}
 			
 			video.attr({
 				preload: 'auto'
 			}).bind('ended', function() {
 				slide.complete();
+			}).bind('loadedmetadata', function() {
+				isReady = true;
+				funcQueue.forEach(function(func) {
+					func();
+				});
 			});
 			
 			slide.on('show', function() {
-				videoElm.currentTime = 0;
+				whenReady(function() {
+					videoElm.currentTime = 0;
+				});
 			}).on('afterShow', function() {
-				videoElm.play();
+				whenReady(function() {
+					videoElm.play();
+				});
 			}).on('hide', function() {
-				videoElm.pause();
+				whenReady(function() {
+					videoElm.pause();
+				});
 			});
 		}
 		
