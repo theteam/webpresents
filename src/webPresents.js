@@ -286,6 +286,13 @@ var webPresents = (function() {
 			// show first slide or the one specified via URL hash (e.g. "index.html#42", zero-based)
 			switchTo( slideshow, slideshow.container.children().eq(~~window.location.hash.substr(1)) );
 			slideshow._started = true;
+			
+			// react to manual location hash changes
+			$(window).bind('hashchange', function() {
+				if (slideshow._currentSlideElm.prevAll().length != ~~window.location.hash.substr(1)) {
+        			switchTo( slideshow, slideshow.container.children().eq(~~window.location.hash.substr(1)) );
+				}
+			});
 		}
 		return slideshow;
 	
