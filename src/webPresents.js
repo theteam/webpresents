@@ -226,6 +226,8 @@ var webPresents = (function() {
 				newSlide.fire('afterShow');
 			}	
 			
+			// set location hash to new slide's number
+			window.location.hash = newSlideElm.prevAll().length;
 		}
 		return slideshow;
 	}
@@ -281,8 +283,8 @@ var webPresents = (function() {
 				});
 			}
 			
-			// show first item
-			switchTo( slideshow, slideshow.container.children().first() );
+			// show first slide or the one specified via URL hash (e.g. "index.html#42", zero-based)
+			switchTo( slideshow, slideshow.container.children().eq(~~window.location.hash.substr(1)) );
 			slideshow._started = true;
 		}
 		return slideshow;
