@@ -666,7 +666,7 @@ var webPresents = (function() {
 				
 				slide.on('show', function() {
 					elements = slide.container.find('*').filter(function() {
-						return $(this).css('display') === 'block';
+						return $.inArray($(this).css('display'), ['block','list-item','table']) > -1;
 					}).each(function(i) {
 						$(this).css({
 							opacity: 0
